@@ -206,7 +206,7 @@ const MobileNextArrow = ({ onClick, currentSlide, slideCount }) => {
       onClick={onClick}
       sx={{ right: 10 }}
     >
-      <svg viewBox="0 0 24 24" width={20} height={20}>
+      <svg viewBox="0 0 24 24" width={48} height={20}>
         <path fill="currentColor" d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
       </svg>
     </MobileArrow>
