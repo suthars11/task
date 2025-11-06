@@ -157,8 +157,64 @@ const ExploreButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-// Custom Arrow Components
-const CustomArrow = styled(Box)(({ theme }) => ({
+// Custom Arrow Components for Mobile
+const MobileArrow = styled(Box)(({ theme }) => ({
+  width: 40,
+  height: 40,
+  border: '1px solid #E0E0E0',
+  backgroundColor: '#ffffff',
+  borderRadius: '50%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  cursor: 'pointer',
+  transition: 'all 0.3s ease',
+  position: 'absolute',
+  top: '50%',
+  transform: 'translateY(-50%)',
+  zIndex: 1,
+  '&:hover': {
+    backgroundColor: '#F5F5F5',
+  },
+  '&.slick-disabled': {
+    opacity: 0.5,
+    cursor: 'not-allowed',
+  },
+  [theme.breakpoints.up('md')]: {
+    display: 'none !important',
+  },
+}));
+
+const MobilePrevArrow = ({ onClick, currentSlide }) => {
+  return (
+    <MobileArrow
+      className={currentSlide === 0 ? 'slick-disabled' : ''}
+      onClick={onClick}
+      sx={{ left: 10 }}
+    >
+      <svg viewBox="0 0 24 24" width={20} height={20}>
+        <path fill="currentColor" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+      </svg>
+    </MobileArrow>
+  );
+};
+
+const MobileNextArrow = ({ onClick, currentSlide, slideCount }) => {
+  return (
+    <MobileArrow
+      className={currentSlide === slideCount - 1 ? 'slick-disabled' : ''}
+      onClick={onClick}
+      sx={{ right: 10 }}
+    >
+      <svg viewBox="0 0 24 24" width={20} height={20}>
+        <path fill="currentColor" d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+      </svg>
+    </MobileArrow>
+  );
+};
+
+// Desktop Arrow Components
+const DesktopArrow = styled(Box)(({ theme }) => ({
   width: 48,
   height: 48,
   border: '1px solid #E0E0E0',
@@ -185,9 +241,9 @@ const CustomArrow = styled(Box)(({ theme }) => ({
   },
 }));
 
-const PrevArrow = ({ onClick, currentSlide }) => {
+const DesktopPrevArrow = ({ onClick, currentSlide }) => {
   return (
-    <CustomArrow
+    <DesktopArrow
       className={currentSlide === 0 ? 'slick-disabled' : ''}
       onClick={onClick}
       sx={{ left: -60 }}
@@ -195,22 +251,21 @@ const PrevArrow = ({ onClick, currentSlide }) => {
       <svg viewBox="0 0 24 24" width={24} height={24}>
         <path fill="currentColor" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
       </svg>
-    </CustomArrow>
+    </DesktopArrow>
   );
 };
 
-const NextArrow = ({ onClick, currentSlide, slideCount }) => {
-  const totalSlides = Math.ceil(slideCount / 4);
+const DesktopNextArrow = ({ onClick, currentSlide, slideCount }) => {
   return (
-    <CustomArrow
-      className={currentSlide >= totalSlides - 1 ? 'slick-disabled' : ''}
+    <DesktopArrow
+      className={currentSlide === slideCount - 1 ? 'slick-disabled' : ''}
       onClick={onClick}
       sx={{ right: -60 }}
     >
       <svg viewBox="0 0 24 24" width={24} height={24}>
         <path fill="currentColor" d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
       </svg>
-    </CustomArrow>
+    </DesktopArrow>
   );
 };
 
@@ -294,41 +349,42 @@ const FeaturedCollectionsSection = () => {
     }
   ];
 
-  // Slick slider settings for exactly 4 images at a time
+  // Slick slider settings - Mobile पर भी slide होगा
   const sliderSettings = {
     dots: false,
     arrows: true,
     infinite: false,
     speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 4, // Scroll exactly 4 slides at a time
+    slidesToShow: 4, // Desktop पर 4 images
+    slidesToScroll: 4, // Desktop पर 4 slides scroll
     initialSlide: 0,
-    prevArrow: <PrevArrow />,
-    nextArrow: <NextArrow />,
+    prevArrow: isMobile ? <MobilePrevArrow /> : <DesktopPrevArrow />,
+    nextArrow: isMobile ? <MobileNextArrow /> : <DesktopNextArrow />,
     responsive: [
       {
-        breakpoint: theme.breakpoints.values.lg,
+        breakpoint: theme.breakpoints.values.lg, // 1200px
         settings: {
           slidesToShow: 4,
           slidesToScroll: 4,
+          arrows: true,
         }
       },
       {
-        breakpoint: theme.breakpoints.values.md,
+        breakpoint: theme.breakpoints.values.md, // 900px
         settings: {
-          slidesToShow: 2,
+          slidesToShow: 2, // Tablet पर 2 images
           slidesToScroll: 2,
-          arrows: false,
+          arrows: true,
         }
       },
       {
-        breakpoint: theme.breakpoints.values.sm,
+        breakpoint: theme.breakpoints.values.sm, // 600px
         settings: {
-          slidesToShow: 1,
+          slidesToShow: 1, // Mobile पर 1 image
           slidesToScroll: 1,
-          arrows: false,
-          centerMode: true,
-          centerPadding: '40px',
+          arrows: true, // Mobile पर arrows show
+          centerMode: true, // Center mode on for better mobile view
+          centerPadding: '40px', // Padding for centered slide
         }
       }
     ]
